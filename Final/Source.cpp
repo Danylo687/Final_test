@@ -88,6 +88,36 @@ void menu() {
 }
 
 
+class tester {
+	string name, surname, fname;
+	string adress;
+	string number;
+public:
+	tester() {
+		name = "Not set";
+		surname = "Not set";
+		fname = "Not set";
+		adress = "Not set";
+		number = "Not set";
+	}
+	tester(string name, string surname, string fname, string adress, string number) {
+		this->name = name;
+		this->surname = surname;
+		this->fname = fname;
+		this->adress = adress;
+		this->number = number;
+	}
+
+	void print() {
+		cout << string(20, '-') << "\n";
+		cout << "Name: " << name << "\n";
+		cout << "Surame: " << surname << "\n";
+		cout << "Fname: " << fname << "\n";
+		cout << "Adress: " << adress << "\n";
+		cout << "Number: " << number << "\n\n";
+	}
+
+};
 
 
 
@@ -102,18 +132,17 @@ int main() {
 	string key;
 	string value;
 
-	fstream fs;
-	fs.open("D:/IT steap/C++/Final/Tester.txt", fstream::in);
+	fstream read_tester;
+	read_tester.open("D:/IT steap/C++/Final/Tester.txt", fstream::in);
 
-	string name, surname, fname, adress, tel;
+	string login, password, name, surname, fname, adress, tel;
 
-	while (!fs.eof()) {
-		fs >> key >> value >> name >> surname >> fname >> adress >> tel;
-		tester_log.insert({ key, value });
+	while (!read_tester.eof()) {
+		read_tester >> key >> value >> name >> surname >> fname >> adress >> tel;
+		//tester_log.insert({ key, value });
 	}
-	for (auto elem : tester_log)
-		cout << elem.first << " : " << elem.second << "\n";
-	cout << name << "-" << surname << "-" << fname << "-" << adress << "-" << tel;
+	
+	read_tester.close();
 
 
 	// Menu

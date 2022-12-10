@@ -114,18 +114,39 @@ public:
 		cout << "Surame: " << surname << "\n";
 		cout << "Fname: " << fname << "\n";
 		cout << "Adress: " << adress << "\n";
-		cout << "Number: " << number << "\n\n";
+		cout << "Number: " << number << "\n";
 	}
 
 };
 
+template <class T>
+void printVector(vector<T> v) {
+	cout << string(50, '-') << "\n\n";
+	for (int i = 0; i < v.size(); i++)
+		v[i].print();
+	cout << string(50, '-') << "\n";
 
+}
+
+template <class T2>
+void printAll(vector<T2> v, map<string, string> m) {
+
+	int i = 0;
+	for (auto el : m) {
+		cout << string(20, '-') << "\n";
+		cout << el.first << " | " << el.second << "\n";
+		v[i].print(); i++;
+		cout << string(20, '-') << "\n\n";
+	}
+		
+}
 
 
 int main() {
 	srand(time(0));
 
 	// Tester log
+	vector<tester> testers;
 	map<string, string> tester_log;
 
 
@@ -135,14 +156,20 @@ int main() {
 	fstream read_tester;
 	read_tester.open("D:/IT steap/C++/Final/Tester.txt", fstream::in);
 
-	string login, password, name, surname, fname, adress, tel;
+	string login, password, name, surname, fname, adress, number;
 
 	while (!read_tester.eof()) {
-		read_tester >> key >> value >> name >> surname >> fname >> adress >> tel;
-		//tester_log.insert({ key, value });
+		read_tester >> key >> value >> name >> surname >> fname >> adress >> number;
+
+		tester t(name, surname, fname, adress, number);
+		testers.push_back(t);
+		tester_log.insert({ key, value });
 	}
-	
+
 	read_tester.close();
+
+
+	printAll(testers, tester_log);
 
 
 	// Menu

@@ -10,7 +10,9 @@ using namespace std;
 
 
 // Sign in
+void testerSignIn() {
 
+}
 
 
 
@@ -51,40 +53,9 @@ int m2() {
 	}
 }
 
-int m3() {
-	int choice = m2();
-
-	switch (choice)
-	{
-		// Tester
-	case 10:
-		// Sign in
-		system("cls");
-		cout << "Tester\n";
-		cout << string(20, '-') << "\nSign in - 0\n";
-		cout << "Sign up - 1\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice;
-		break;
-	case 1:
-		// Admin
-		system("cls");
-		cout << "Admin\n";
-		cout << string(20, '-') << "\nSign in - 0\n";
-		cout << "Sign up - 1\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice + 10;
-		break;
-	default:
-		break;
-	}
-}
-
 
 void menu() {
-	int n = m3();
+	int n = m2();
 }
 
 
@@ -117,8 +88,16 @@ public:
 		cout << "Number: " << number << "\n";
 	}
 
+	string getName() { return name; }
+
+	string getAll() { 
+		string all = name + " " + surname + " " + fname + " " + adress + " " + number + "\n";
+		return all; 
+	}
 };
 
+
+// Print
 template <class T>
 void printVector(vector<T> v) {
 	cout << string(50, '-') << "\n\n";
@@ -129,7 +108,7 @@ void printVector(vector<T> v) {
 }
 
 template <class T2>
-void printAll(vector<T2> v, map<string, string> m) {
+void printAllTesters(vector<T2> v, map<string, string> m) {
 
 	int i = 0;
 	for (auto el : m) {
@@ -142,14 +121,8 @@ void printAll(vector<T2> v, map<string, string> m) {
 }
 
 
-int main() {
-	srand(time(0));
-
-	// Tester log
-	vector<tester> testers;
-	map<string, string> tester_log;
-
-
+// Reading
+void testersReadingFromFile(vector<tester>& testers, map<string, string>& tester_log) {
 	string key;
 	string value;
 
@@ -167,14 +140,42 @@ int main() {
 	}
 
 	read_tester.close();
+}
+
+// Writing
+void testersWritingToFile(vector<tester> testers, map<string, string> tester_log) {
+	fstream write_tester;
+	write_tester.open("D:/IT steap/C++/Final/Tester.txt", fstream::out);
+
+	int i = 0;
+	for (auto el : tester_log) {
+		write_tester << el.first << " " << el.second << " ";
+		write_tester << testers[i].getAll();
+		i++;
+	}
+
+	write_tester.close();
+}
 
 
-	printAll(testers, tester_log);
 
 
-	// Menu
-	//menu();
+
+int main() {
+	srand(time(0));
+
+
+	// Create tester
+	vector<tester> testers;
+	map<string, string> tester_log;
+
+
+	// Testers reading from file
+	testersReadingFromFile(testers, tester_log);
+
 	
+	
+
 
 
 

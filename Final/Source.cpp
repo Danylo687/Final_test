@@ -3,6 +3,7 @@
 #include <time.h> 
 #include <functional> 
 #include <algorithm> 
+#include <string> 
 #include <fstream>
 #include <vector> 
 #include <map>
@@ -111,74 +112,6 @@ public:
 		return all;
 	}
 };
-
-
-
-// Menu
-int m1() {
-	int choice;
-	cout << string(20, '-') << "\nTester - 0 \nAdmin  - 1\n" << string(20, '-') << "\nEnter choice: ";
-	cin >> choice;
-	return choice;
-}
-int m2(int admin_len) {
-	int choice = m1();
-	switch (choice)
-	{
-	case 0:
-		// Tester
-		system("cls");
-		cout << "Tester\n";
-		cout << string(20, '-') << "\nSign in - 0\n";
-		cout << "Sign up - 1\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice;
-		break;
-	case 1:
-		// Admin
-		system("cls");
-		cout << "Admin\n";
-		cout << string(20, '-') << "\n";
-
-		if (admin_len == 0)
-			cout << "Sign in - 0";
-		else
-			cout << "Sign up - 1";
-
-		cout << "\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice + 10;
-		break;
-	default:
-		break;
-	}
-}
-
-
-void menu(vector<tester>& testers, map<string, string>& tester_log, string admin_login, string admin_password) {
-
-
-	/*int choice = m2();
-	switch (choice)
-	{
-	case 0:
-		testerSignIn(tester_log);
-		break;
-	case 1:
-		testerSignUp(testers, tester_log);
-		break;
-	case 10:
-		adminSignIn();
-		break;
-	case 11:
-		adminSignUp();
-		break;
-	default:
-		break;
-	}*/
-}
 
 
 // Print
@@ -360,12 +293,12 @@ void adminSignIn() {
 	cin >> password;
 	cout << string(20, '-') << "\n";
 
-	if (login != admin_login) { 
-		cout << "Incorrect login\n"; 
+	if (login != admin_login) {
+		cout << "Incorrect login\n";
 	}
 	else {
-		if (password != admin_password) { 
-			cout << "Incorrect password\n"; 
+		if (password != admin_password) {
+			cout << "Incorrect password\n";
 		}
 		else {
 			cout << "Correct\n\n";
@@ -379,6 +312,150 @@ void adminSignIn() {
 
 
 
+// ------------------------------------------------------- Actoins
+
+// -------------------------- Tester
+
+// -----------Tests
+
+class test {
+	string question;
+	vector<string> answers;
+	int number_answers;
+	int correct;
+public:
+	test() {
+		question = "Not set";
+		correct = 0;
+		number_answers = 0;
+	}
+	test(string question, vector<string> answers, int correct, int number_answers) {
+		this->question = question;
+		this->answers = answers;
+		this->correct = correct;
+		this->number_answers = number_answers;
+	}
+
+	void print() {
+		cout << string(50, '-') << "\n";
+		cout << question << "\n";
+		for (int i = 1; i < answers.size(); i++) {
+			cout << i << ". " << answers[i] << "\n";
+		}
+		cout << string(50, '-') << "\n\n";
+	}
+};
+
+
+void printTests(vector<test> tests) {
+	//cout << string(50, '-') << "\n";
+	for (int i = 0; i < tests.size(); i++) {
+		tests[i].print();
+	}
+	//cout << string(50, '-') << "\n\n";
+}
+
+
+void readTests(vector<test>& tests) {
+	fstream read_tests;
+	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+
+	while (!read_tests.eof()) {
+		string question, line;
+		vector<string> answers;
+		int number_answers, correct;
+
+		getline(read_tests, question);
+		read_tests >> number_answers >> correct;
+		for (int i = 0; i <= number_answers; i++) {
+			getline(read_tests, line);
+			answers.push_back(line);
+		}
+
+		test t(question, answers, number_answers, correct);
+		tests.push_back(t);
+	}
+
+	read_tests.close();
+}
+
+
+
+
+
+
+// --------------------- Menu
+int m1() {
+	int choice;
+	cout << string(20, '-') << "\nTester - 0 \nAdmin  - 1\n" << string(20, '-') << "\nEnter choice: ";
+	cin >> choice;
+	return choice;
+}
+int m2() {
+	fstream read_admin;
+	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+
+	int admin_length = read_admin.tellg();
+
+	read_admin.close();
+
+	int choice = m1();
+	switch (choice)
+	{
+	case 0:
+		// Tester
+		system("cls");
+		cout << "Tester\n";
+		cout << string(20, '-') << "\nSign in - 0\n";
+		cout << "Sign up - 1\n" << string(20, '-');
+		cout << "\nEnter choice: ";
+		cin >> choice;
+		return choice;
+		break;
+	case 1:
+		// Admin
+		system("cls");
+		cout << "Admin\n";
+		cout << string(20, '-') << "\n";
+
+		if (admin_length == 0)
+			cout << "Sign in - 0";
+		else
+			cout << "Sign up - 1";
+
+		cout << "\n" << string(20, '-');
+		cout << "\nEnter choice: ";
+		cin >> choice;
+		return choice + 10;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void menu(vector<tester>& testers, map<string, string>& tester_log) {
+
+	int choice = m2();
+	switch (choice)
+	{
+	case 0:
+		testerSignIn(tester_log);
+		break;
+	case 1:
+		testerSignUp(testers, tester_log);
+		break;
+	case 10:
+		adminSignIn();
+		break;
+	case 11:
+		adminSignUp();
+		break;
+	default:
+		break;
+	}
+
+}
 
 
 int main() {
@@ -395,48 +472,25 @@ int main() {
 	string admin_password;
 
 
+	// Create tests
+	vector<test> tests;
+
+
 	// Testers reading from file
 	testersReadingFromFile(testers, tester_log);
 
-	// Testers writing to file
-	//testersWritingToFile(testers, tester_log);
 
 
 	// Menu
-	fstream read_admin;
-	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
-
-	int admin_length = read_admin.tellg();
-
-	read_admin.close();
+	//menu(testers, tester_log);
 
 
-	int choice = m2(admin_length);
-	switch (choice)
-	{
-	case 0:
-		testerSignIn(tester_log);
-		break;
-	case 1:
-		testerSignUp(testers, tester_log);
-		break;
-	case 10:
-		if (admin_length == 0)
-			adminSignIn();
-		break;
-	case 11:
-		if (admin_length != 0)
-			adminSignUp();
-		break;
-	default:
-		break;
-	}
+
+	readTests(tests);
+	printTests(tests);
 
 
-	//printAllTesters(testers, tester_log);
-	//cout << "\n\n" << string(100, '-') << "\n\n";
-	//printMap(tester_log);
-	//printVector(testers);
+
 
 	testersWritingToFile(testers, tester_log);
 

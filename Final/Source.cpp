@@ -11,49 +11,6 @@ using namespace std;
 
 
 
-
-// Menu
-int m1() {
-	int choice;
-	cout << string(20, '-') << "\nTester - 0 \nAdmin  - 1\n" << string(20, '-') << "\nEnter choice: ";
-	cin >> choice;
-	return choice;
-}
-int m2() {
-	int choice = m1();
-	switch (choice)
-	{
-	case 0:
-		// Tester
-		system("cls");
-		cout << "Tester\n";
-		cout << string(20, '-') << "\nSign in - 0\n";
-		cout << "Sign up - 1\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice;
-		break;
-	case 1:
-		// Admin
-		system("cls");
-		cout << "Admin\n";
-		cout << string(20, '-') << "\nSign in - 0\n";
-		cout << "Sign up - 1\n" << string(20, '-');
-		cout << "\nEnter choice: ";
-		cin >> choice;
-		return choice + 10;
-		break;
-	default:
-		break;
-	}
-}
-
-
-void menu() {
-	int n = m2();
-}
-
-
 class tester {
 	string login, password;
 	string name, surname, fname;
@@ -156,6 +113,74 @@ public:
 };
 
 
+
+// Menu
+int m1() {
+	int choice;
+	cout << string(20, '-') << "\nTester - 0 \nAdmin  - 1\n" << string(20, '-') << "\nEnter choice: ";
+	cin >> choice;
+	return choice;
+}
+int m2(int admin_len) {
+	int choice = m1();
+	switch (choice)
+	{
+	case 0:
+		// Tester
+		system("cls");
+		cout << "Tester\n";
+		cout << string(20, '-') << "\nSign in - 0\n";
+		cout << "Sign up - 1\n" << string(20, '-');
+		cout << "\nEnter choice: ";
+		cin >> choice;
+		return choice;
+		break;
+	case 1:
+		// Admin
+		system("cls");
+		cout << "Admin\n";
+		cout << string(20, '-') << "\n";
+
+		if (admin_len == 0)
+			cout << "Sign in - 0";
+		else
+			cout << "Sign up - 1";
+
+		cout << "\n" << string(20, '-');
+		cout << "\nEnter choice: ";
+		cin >> choice;
+		return choice + 10;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void menu(vector<tester>& testers, map<string, string>& tester_log, string admin_login, string admin_password) {
+
+
+	/*int choice = m2();
+	switch (choice)
+	{
+	case 0:
+		testerSignIn(tester_log);
+		break;
+	case 1:
+		testerSignUp(testers, tester_log);
+		break;
+	case 10:
+		adminSignIn();
+		break;
+	case 11:
+		adminSignUp();
+		break;
+	default:
+		break;
+	}*/
+}
+
+
 // Print
 template <class T>
 void printVector(vector<T> v) {
@@ -182,7 +207,7 @@ void printAllTesters(vector<T3> v, map<string, string> m) {
 	for (auto el : m) {
 		cout << string(20, '-') << "\n";
 		cout << el.first << " | " << el.second << "\n";
-		v[i].print(); 
+		v[i].print();
 		i++;
 		cout << string(20, '-') << "\n\n";
 	}*/
@@ -191,7 +216,7 @@ void printAllTesters(vector<T3> v, map<string, string> m) {
 	for (auto el : m) {
 		cout << string(20, '-') << "\n";
 		cout << v[i].getLogin() << " | " << v[i].getPassword() << "\n";
-		v[i].print(1); 
+		v[i].print(1);
 		i++;
 		cout << string(20, '-') << "\n\n";
 	}
@@ -225,9 +250,8 @@ void testersWritingToFile(vector<tester> testers, map<string, string> tester_log
 
 	int i = 0;
 	for (auto el : tester_log) {
-		//write_tester << el.first << " " << el.second << " ";
 		int length = write_tester.tellg();
-		if(length == 0)
+		if (length == 0)
 			write_tester << testers[i].getAll();
 		else
 			write_tester << "\n" << testers[i].getAll();
@@ -261,6 +285,7 @@ void testerSignIn(map<string, string> tester_log) {
 	}
 }
 
+
 // Sign up
 void testerSignUp(vector<tester>& testers, map<string, string>& tester_log) {
 	string login, password;
@@ -288,6 +313,72 @@ void testerSignUp(vector<tester>& testers, map<string, string>& tester_log) {
 }
 
 
+// --------------------------- Admin
+
+// Sign up
+void adminSignUp() {
+	string login, password;
+
+	system("cls");
+	cout << "Sign up \n";
+	cout << string(20, '-') << "\n";
+	cout << "Enter login: ";
+	cin >> login;
+	cout << "Enter password: ";
+	cin >> password;
+	cout << string(20, '-') << "\n";
+
+
+	fstream write_admin;
+	write_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::out);
+
+	write_admin << login << " " << password;
+
+	write_admin.close();
+}
+
+// Sign in
+void adminSignIn() {
+	// Read
+	fstream read_admin;
+	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+
+	string admin_login, admin_password;
+	read_admin >> admin_login >> admin_password;
+
+	read_admin.close();
+
+
+	string login, password;
+
+	system("cls");
+	cout << "Sign in \n";
+	cout << string(20, '-') << "\n";
+	cout << "Enter login: ";
+	cin >> login;
+	cout << "Enter password: ";
+	cin >> password;
+	cout << string(20, '-') << "\n";
+
+	if (login != admin_login) { 
+		cout << "Incorrect login\n"; 
+	}
+	else {
+		if (password != admin_password) { 
+			cout << "Incorrect password\n"; 
+		}
+		else {
+			cout << "Correct\n\n";
+		}
+	}
+
+}
+
+
+
+
+
+
 
 
 int main() {
@@ -299,6 +390,11 @@ int main() {
 	map<string, string> tester_log;
 
 
+	// Create admin
+	string admin_login;
+	string admin_password;
+
+
 	// Testers reading from file
 	testersReadingFromFile(testers, tester_log);
 
@@ -307,7 +403,15 @@ int main() {
 
 
 	// Menu
-	int choice = m2();
+	fstream read_admin;
+	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+
+	int admin_length = read_admin.tellg();
+
+	read_admin.close();
+
+
+	int choice = m2(admin_length);
 	switch (choice)
 	{
 	case 0:
@@ -316,12 +420,20 @@ int main() {
 	case 1:
 		testerSignUp(testers, tester_log);
 		break;
+	case 10:
+		if (admin_length == 0)
+			adminSignIn();
+		break;
+	case 11:
+		if (admin_length != 0)
+			adminSignUp();
+		break;
 	default:
 		break;
 	}
 
 
-	printAllTesters(testers, tester_log);
+	//printAllTesters(testers, tester_log);
 	//cout << "\n\n" << string(100, '-') << "\n\n";
 	//printMap(tester_log);
 	//printVector(testers);

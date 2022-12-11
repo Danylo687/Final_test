@@ -318,19 +318,19 @@ void adminSignIn() {
 
 // -----------Tests
 
-class test {
-	string question;
+class question {
+	string quest;
 	vector<string> answers;
 	int number_answers;
 	int correct;
 public:
-	test() {
-		question = "Not set";
+	question() {
+		quest = "Not set";
 		correct = 0;
 		number_answers = 0;
 	}
-	test(string question, vector<string> answers, int correct, int number_answers) {
-		this->question = question;
+	question(string quest, vector<string> answers, int correct, int number_answers) {
+		this->quest = quest;
 		this->answers = answers;
 		this->correct = correct;
 		this->number_answers = number_answers;
@@ -338,7 +338,8 @@ public:
 
 	void print() {
 		cout << string(50, '-') << "\n";
-		cout << question << "\n";
+		cout << quest << "\n";
+		cout << string(50, '-') << "\n";
 		for (int i = 1; i < answers.size(); i++) {
 			cout << i << ". " << answers[i] << "\n";
 		}
@@ -347,38 +348,131 @@ public:
 };
 
 
-void printTests(vector<test> tests) {
+void printQuestions(vector<question> questions) {
 	//cout << string(50, '-') << "\n";
-	for (int i = 0; i < tests.size(); i++) {
-		tests[i].print();
+	for (int i = 0; i < questions.size(); i++) {
+		questions[i].print();
 	}
 	//cout << string(50, '-') << "\n\n";
 }
 
 
-void readTests(vector<test>& tests) {
-	fstream read_tests;
-	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+void readQuestions(vector<question>& questions) {
+	fstream read_qustions;
+	read_qustions.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
 
-	while (!read_tests.eof()) {
-		string question, line;
+	while (!read_qustions.eof()) {
+		string quest, line;
 		vector<string> answers;
 		int number_answers, correct;
 
-		getline(read_tests, question);
+		getline(read_qustions, quest);
+		read_qustions >> number_answers >> correct;
+		for (int i = 0; i <= number_answers; i++) {
+			getline(read_qustions, line);
+			answers.push_back(line);
+		}
+
+		question q(quest, answers, number_answers, correct);
+		questions.push_back(q);
+	}
+
+	read_qustions.close();
+}
+
+
+class test {
+	string name;
+	vector<question> questions;
+	int number_questions;
+public:
+	test() {
+		name = "Not set";
+		number_questions = 0;
+	}
+	test(string name, vector<question> questions, int number_questions) {
+		this->name = name;
+		this->questions = questions;
+		this->number_questions = number_questions;
+	}
+
+	void print() {
+		cout << "Name: " << name << "\n";
+		cout << string(50, '-') << "\n\n";
+		for (int i = 0; i < number_questions; i++) {
+			questions[i].print();
+		}
+		cout << string(50, '-') << "\n";
+	}
+
+	void set(string name, vector<question> questions, int number_questions) {
+		this->name = name;
+		this->questions = questions;
+		this->number_questions = number_questions;
+	}
+};
+
+void readTests(vector<question>& questions, test& t) {
+	fstream read_tests;
+	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+
+	string name;
+	int number_questions;
+	getline(read_tests, name);
+	read_tests >> number_questions;
+
+	for (int i = 0; i < number_questions; i++) {
+		string quest, line;
+		vector<string> answers;
+		int number_answers, correct;
+
+		if(i == 0)
+			getline(read_tests, quest);
+		getline(read_tests, quest);
+		//read_tests >> quest;
 		read_tests >> number_answers >> correct;
 		for (int i = 0; i <= number_answers; i++) {
 			getline(read_tests, line);
 			answers.push_back(line);
 		}
 
-		test t(question, answers, number_answers, correct);
-		tests.push_back(t);
+		question q(quest, answers, number_answers, correct);
+		questions.push_back(q);
+
 	}
+
+	t.set(name, questions, number_questions);
 
 	read_tests.close();
 }
 
+
+class result {
+	double procent;
+	int correct, incorrect;
+	int mark;
+public:
+	result() {
+		procent = 0;
+		correct = incorrect = 0;
+		mark = 0;
+	}
+	result(double procent, int correct, int incorrect, int mark) {
+		this->procent = procent;
+		this->correct = correct;
+		this->incorrect = incorrect;
+		this->mark = mark;
+	}
+
+	void print() {
+		cout << string(20, '-') << "\n";
+		cout << "Procent: " << procent << "%\n";
+		cout << "Correct: " << correct << "\n";
+		cout << "Incorrect: " << incorrect << "\n";
+		cout << "Mark: " << mark << "\n";
+		cout << string(20, '-') << "\n";
+	}
+};
 
 
 
@@ -472,8 +566,13 @@ int main() {
 	string admin_password;
 
 
-	// Create tests
-	vector<test> tests;
+	// Create questions
+	vector<question> questions;
+	//readQuestions(questions);
+
+	// Create test
+	test t;
+	readTests(questions, t);
 
 
 	// Testers reading from file
@@ -486,13 +585,13 @@ int main() {
 
 
 
-	readTests(tests);
-	printTests(tests);
+	t.print();
 
 
 
 
-	testersWritingToFile(testers, tester_log);
+
+
 
 
 

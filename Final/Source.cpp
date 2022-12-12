@@ -449,10 +449,95 @@ void readTests(vector<question>& questions, vector<test>& tests) {
 
 		tests.push_back(t);
 
-		t.print();
 	}
 
 	read_tests.close();
+}
+
+
+// ------------------------------
+class rozdil {
+	string name;
+	vector<test> tests;
+	int number_tests;
+public:
+	rozdil() {
+		name = "Not set";
+		number_tests = 0;
+	}
+	rozdil(string name, vector<test> tests, int number_tests) {
+		this->name = name;
+		this->tests = tests;
+		this->number_tests = number_tests;
+	}
+
+	void print() {
+		cout << "Name: " << name << "\n";
+		cout << string(50, '-') << "\n\n";
+		for (int i = 0; i < number_tests; i++) {
+			tests[i].print();
+		}
+		cout << string(50, '-') << "\n";
+	}
+
+
+};
+
+
+void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>& rozdils) {
+	fstream read_rozdil;
+	read_rozdil.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+
+	while (!read_rozdil.eof()) {
+
+		string name;
+		int number_tests;
+		getline(read_rozdil, name);
+		read_rozdil >> number_tests;
+
+		vector<test> tst;
+		for (int i = 0; i < number_tests; i++) {
+			string name_test;
+			int number_questions;
+
+			if (i == 0)
+				getline(read_rozdil, name_test);
+			getline(read_rozdil, name_test);
+			read_rozdil >> number_questions;
+
+			vector<question> qwer;
+			for (int k = 0; k < number_questions; k++) {
+				string quest, line;
+				vector<string> answers;
+				int number_answers, correct;
+
+				if (k == 0)
+					getline(read_rozdil, quest);
+				getline(read_rozdil, quest);
+				read_rozdil >> number_answers >> correct;
+				for (int j = 0; j <= number_answers; j++) {
+					getline(read_rozdil, line);
+					answers.push_back(line);
+				}
+
+				question q(quest, answers, number_answers, correct);
+				questions.push_back(q);
+
+
+				qwer.push_back(q);
+			}
+
+			test t(name_test, qwer, number_questions);
+			tst.push_back(t);
+		}
+
+		rozdil r(name, tst, number_tests);
+
+		rozdils.push_back(r);
+
+	}
+
+	read_rozdil.close();
 }
 
 
@@ -581,7 +666,11 @@ int main() {
 
 	// Create test
 	vector<test> tests;
-	readTests(questions, tests);
+	//readTests(questions, tests);
+
+	// Create rozdil
+	vector<rozdil> rozdils;
+	readRozdil(questions, tests, rozdils);
 
 
 	// Testers reading from file
@@ -590,15 +679,12 @@ int main() {
 
 
 	// Menu
-	//menu(testers, tester_log);
+	menu(testers, tester_log);
 
-	for (int i = 0; i < tests.size(); i++)
-	{
-		//tests[i].print();
-	}
+	
 
 
-
+	
 
 
 

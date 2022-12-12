@@ -11,12 +11,40 @@ using namespace std;
 
 
 
+class result {
+	int correct, incorrect;
+	double procent;
+	int mark;
+public:
+	result() {
+		correct = incorrect = 0;
+		procent = 0;
+		mark = 0;
+	}
+	result(double procent, int correct, int incorrect, int mark) {
+		this->correct = correct;
+		this->incorrect = incorrect;
+		this->procent = procent;
+		this->mark = mark;
+	}
+
+	void print() {
+		cout << string(20, '-') << "\n";
+		cout << "Correct: " << correct << "\n";
+		cout << "Incorrect: " << incorrect << "\n";
+		cout << "Procent: " << procent << "%\n";
+		cout << "Mark: " << mark << "\n";
+		cout << string(20, '-') << "\n";
+	}
+};
+
 
 class tester {
 	string login, password;
 	string name, surname, fname;
 	string adress;
 	string number;
+	vector<result> results;
 public:
 	tester() {
 		login = "Not set";
@@ -100,8 +128,17 @@ public:
 		cout << string(20, '-') << "\n";
 	}
 
+	void printResults() {
+		for (int i = 0; i < results.size(); i++) {
+
+			results[i].print();
+		}
+	}
+
 	string getLogin() { return login; }
 	string getPassword() { return password; }
+	vector<result> getResults() { return results; }
+	result getResult(int i) { return results[i]; }
 
 	string getInfo() {
 		string info = name + " " + surname + " " + fname + " " + adress + " " + number + "\n";
@@ -135,15 +172,6 @@ void printMap(map<string, string> m) {
 
 template <class T3>
 void printAllTesters(vector<T3> v, map<string, string> m) {
-
-	/*int i = 0;
-	for (auto el : m) {
-		cout << string(20, '-') << "\n";
-		cout << el.first << " | " << el.second << "\n";
-		v[i].print();
-		i++;
-		cout << string(20, '-') << "\n\n";
-	}*/
 
 	int i = 0;
 	for (auto el : m) {
@@ -329,11 +357,11 @@ public:
 		correct = 0;
 		number_answers = 0;
 	}
-	question(string quest, vector<string> answers, int correct, int number_answers) {
+	question(string quest, vector<string> answers, int number_answers, int correct) {
 		this->quest = quest;
 		this->answers = answers;
-		this->correct = correct;
 		this->number_answers = number_answers;
+		this->correct = correct;
 	}
 
 	void print() {
@@ -345,15 +373,15 @@ public:
 		}
 		cout << string(50, '-') << "\n\n";
 	}
+
+	int getCorrect() { return correct; }
 };
 
 
 void printQuestions(vector<question> questions) {
-	//cout << string(50, '-') << "\n";
 	for (int i = 0; i < questions.size(); i++) {
 		questions[i].print();
 	}
-	//cout << string(50, '-') << "\n\n";
 }
 
 
@@ -410,6 +438,10 @@ public:
 		this->questions = questions;
 		this->number_questions = number_questions;
 	}
+
+	string getName() { return name; }
+	int getNumber() { return number_questions; }
+	vector<question> getQuestions() { return questions; }
 };
 
 void readTests(vector<question>& questions, vector<test>& tests) {
@@ -480,7 +512,10 @@ public:
 		cout << string(50, '-') << "\n";
 	}
 
-
+	string getName() { return name; }
+	int getNumber() { return number_tests; }
+	vector<test> getTests() { return tests; }
+	test getTest(int i) { return tests[i]; }
 };
 
 
@@ -528,6 +563,7 @@ void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>
 			}
 
 			test t(name_test, qwer, number_questions);
+			tests.push_back(t);
 			tst.push_back(t);
 		}
 
@@ -541,33 +577,44 @@ void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>
 }
 
 
-class result {
-	double procent;
-	int correct, incorrect;
-	int mark;
-public:
-	result() {
-		procent = 0;
-		correct = incorrect = 0;
-		mark = 0;
-	}
-	result(double procent, int correct, int incorrect, int mark) {
-		this->procent = procent;
-		this->correct = correct;
-		this->incorrect = incorrect;
-		this->mark = mark;
+
+void passTest(test t) {
+	int number = t.getNumber();
+	vector<question> questions = t.getQuestions();
+	vector<int> correct_ansewrs;
+	vector<int> choice_ansewrs;
+	int correct = 0, incorrect = 0;
+
+	for (int i = 0; i < number; i++) {
+		system("cls");
+		cout << string(30, '-') << "\n";
+		cout << "Name: " << t.getName() << "\n";
+		cout << string(30, '-') << "\n\n";
+
+		int choice;
+		questions[i].print();
+		cout << "Eneter choice: ";
+		cin >> choice;
+		choice_ansewrs.push_back(choice);
+		correct_ansewrs.push_back(questions[i].getCorrect());
+
+		cout << string(30, '-') << "\n\n";
+
 	}
 
-	void print() {
-		cout << string(20, '-') << "\n";
-		cout << "Procent: " << procent << "%\n";
-		cout << "Correct: " << correct << "\n";
-		cout << "Incorrect: " << incorrect << "\n";
-		cout << "Mark: " << mark << "\n";
-		cout << string(20, '-') << "\n";
+	for (int i = 0; i < number; i++) {
+		if (choice_ansewrs[i] == correct_ansewrs[i])
+			correct++;
+		else
+			incorrect++;
 	}
-};
 
+	system("cls");
+	double procent = 100 / number * correct;
+	int mark = 12 / number * correct;
+	result r(procent, correct, incorrect, mark);
+	r.print();
+}
 
 
 
@@ -620,29 +667,51 @@ int m2() {
 		break;
 	}
 }
-
-
-void menu(vector<tester>& testers, map<string, string>& tester_log) {
+int m3(vector<tester>& testers, map<string, string>& tester_log) {
 
 	int choice = m2();
 	switch (choice)
 	{
 	case 0:
 		testerSignIn(tester_log);
+		return 1;
 		break;
 	case 1:
 		testerSignUp(testers, tester_log);
+		return 1;
 		break;
 	case 10:
 		adminSignIn();
+		return 2;
 		break;
 	case 11:
 		adminSignUp();
+		return 2;
 		break;
 	default:
 		break;
 	}
 
+}
+int m4(vector<tester>& testers, map<string, string>& tester_log) {
+	int choice = m3(testers, tester_log);
+
+	switch (choice) {
+	case 1:
+		system("cls");
+		cout << string(20, '-') << "\n";
+		cout << "Make test - 1\n";
+		cout << "See result - 2\n";
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> choice;
+		return choice;
+		break;
+	}
+}
+int m5(vector<tester>& testers, map<string, string>& tester_log) {
+
+	return 0;
 }
 
 
@@ -653,6 +722,7 @@ int main() {
 	// Create tester
 	vector<tester> testers;
 	map<string, string> tester_log;
+	tester active_tester();
 
 
 	// Create admin
@@ -679,9 +749,45 @@ int main() {
 
 
 	// Menu
-	menu(testers, tester_log);
+	int c = 1;// m4(testers, tester_log);
 
-	
+	switch (c)
+	{
+	case 1:
+		// Rozdil
+		int r;
+		system("cls");
+		cout << string(20, '-') << "\n";
+		for (int i = 1; i <= rozdils.size(); i++)
+		{
+			cout << rozdils[i-1].getName() << " - " << i << "\n";
+		}
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> r;
+
+		// Test
+		int t;
+		system("cls");
+		cout << string(20, '-') << "\n";
+		for (int i = 1; i <= rozdils[r-1].getNumber(); i++)
+		{
+			cout << rozdils[r-1].getTest(i-1).getName() << " - " << i << "\n";
+		}
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> t;
+
+
+		system("cls");
+		passTest(rozdils[r-1].getTest(t-1));
+		break;
+	case 2:
+
+		break;
+	default:
+		break;
+	}
 
 
 	

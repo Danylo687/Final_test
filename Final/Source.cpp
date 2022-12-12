@@ -412,36 +412,45 @@ public:
 	}
 };
 
-void readTests(vector<question>& questions, test& t) {
+void readTests(vector<question>& questions, vector<test>& tests) {
 	fstream read_tests;
 	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
 
-	string name;
-	int number_questions;
-	getline(read_tests, name);
-	read_tests >> number_questions;
+	while(!read_tests.eof()) {
 
-	for (int i = 0; i < number_questions; i++) {
-		string quest, line;
-		vector<string> answers;
-		int number_answers, correct;
+		string name;
+		int number_questions;
+		getline(read_tests, name);
+		read_tests >> number_questions;
 
-		if(i == 0)
+		vector<question> qwer;
+		for (int i = 0; i < number_questions; i++) {
+			string quest, line;
+			vector<string> answers;
+			int number_answers, correct;
+
+			if (i == 0)
+				getline(read_tests, quest);
 			getline(read_tests, quest);
-		getline(read_tests, quest);
-		//read_tests >> quest;
-		read_tests >> number_answers >> correct;
-		for (int i = 0; i <= number_answers; i++) {
-			getline(read_tests, line);
-			answers.push_back(line);
+			read_tests >> number_answers >> correct;
+			for (int j = 0; j <= number_answers; j++) {
+				getline(read_tests, line);
+				answers.push_back(line);
+			}
+
+			question q(quest, answers, number_answers, correct);
+			questions.push_back(q);
+
+			
+			qwer.push_back(q);
 		}
 
-		question q(quest, answers, number_answers, correct);
-		questions.push_back(q);
+		test t(name, qwer, number_questions);
 
+		tests.push_back(t);
+
+		t.print();
 	}
-
-	t.set(name, questions, number_questions);
 
 	read_tests.close();
 }
@@ -571,8 +580,8 @@ int main() {
 	//readQuestions(questions);
 
 	// Create test
-	test t;
-	readTests(questions, t);
+	vector<test> tests;
+	readTests(questions, tests);
 
 
 	// Testers reading from file
@@ -583,9 +592,10 @@ int main() {
 	// Menu
 	//menu(testers, tester_log);
 
-
-
-	t.print();
+	for (int i = 0; i < tests.size(); i++)
+	{
+		//tests[i].print();
+	}
 
 
 

@@ -1,11 +1,11 @@
-#include <iostream> 
-#include <Windows.h> 
-#include <time.h> 
-#include <functional> 
-#include <algorithm> 
-#include <string> 
+#include <iostream>
+#include <Windows.h>
+#include <time.h>
+#include <functional>
+#include <algorithm>
+#include <string>
 #include <fstream>
-#include <vector> 
+#include <vector>
 #include <map>
 using namespace std;
 
@@ -34,7 +34,7 @@ public:
 		cout << "Incorrect: " << incorrect << "\n";
 		cout << "Procent: " << procent << "%\n";
 		cout << "Mark: " << mark << "\n";
-		cout << string(20, '-') << "\n";
+		cout << string(20, '-') << "\n\n";
 	}
 };
 
@@ -135,6 +135,8 @@ public:
 		}
 	}
 
+	void addResult(result r) { results.push_back(r); }
+
 	string getLogin() { return login; }
 	string getPassword() { return password; }
 	vector<result> getResults() { return results; }
@@ -224,7 +226,7 @@ void testersWritingToFile(vector<tester> testers, map<string, string> tester_log
 
 
 // Sign in
-void testerSignIn(map<string, string> tester_log) {
+void testerSignIn(vector<tester>& testers, map<string, string> tester_log, tester& active_tester) {
 	string login, password;
 
 	system("cls");
@@ -241,6 +243,11 @@ void testerSignIn(map<string, string> tester_log) {
 	else {
 		if (res->second != password) cout << "Incorrect password\n";
 		else {
+			for (int i = 0; i < testers.size(); i++) {
+				if (testers[i].getLogin() == res->first)
+					active_tester = testers[i];
+			}
+
 			cout << "Correct\n\n";
 		}
 	}
@@ -248,7 +255,7 @@ void testerSignIn(map<string, string> tester_log) {
 
 
 // Sign up
-void testerSignUp(vector<tester>& testers, map<string, string>& tester_log) {
+void testerSignUp(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester) {
 	string login, password;
 
 	system("cls");
@@ -265,9 +272,10 @@ void testerSignUp(vector<tester>& testers, map<string, string>& tester_log) {
 	else {
 		tester t;
 		t.set(login, password);
-		t.print();
 		tester_log.insert({ login, password });
 		testers.push_back(t);
+		active_tester = t;
+
 		cout << "Correct\n\n";
 	}
 
@@ -448,7 +456,7 @@ void readTests(vector<question>& questions, vector<test>& tests) {
 	fstream read_tests;
 	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
 
-	while(!read_tests.eof()) {
+	while (!read_tests.eof()) {
 
 		string name;
 		int number_questions;
@@ -473,7 +481,7 @@ void readTests(vector<question>& questions, vector<test>& tests) {
 			question q(quest, answers, number_answers, correct);
 			questions.push_back(q);
 
-			
+
 			qwer.push_back(q);
 		}
 
@@ -578,7 +586,7 @@ void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>
 
 
 
-void passTest(test t) {
+void passTest(test t, tester& active_tester) {
 	int number = t.getNumber();
 	vector<question> questions = t.getQuestions();
 	vector<int> correct_ansewrs;
@@ -613,7 +621,12 @@ void passTest(test t) {
 	double procent = 100 / number * correct;
 	int mark = 12 / number * correct;
 	result r(procent, correct, incorrect, mark);
+
 	r.print();
+	active_tester.addResult(r);
+
+	system("pause");
+
 }
 
 
@@ -667,17 +680,17 @@ int m2() {
 		break;
 	}
 }
-int m3(vector<tester>& testers, map<string, string>& tester_log) {
+int m3(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester) {
 
 	int choice = m2();
 	switch (choice)
 	{
 	case 0:
-		testerSignIn(tester_log);
+		testerSignIn(testers, tester_log, active_tester);
 		return 1;
 		break;
 	case 1:
-		testerSignUp(testers, tester_log);
+		testerSignUp(testers, tester_log, active_tester);
 		return 1;
 		break;
 	case 10:
@@ -693,10 +706,13 @@ int m3(vector<tester>& testers, map<string, string>& tester_log) {
 	}
 
 }
-int m4(vector<tester>& testers, map<string, string>& tester_log) {
-	int choice = m3(testers, tester_log);
+int m4(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester) {
 
-	switch (choice) {
+	int choice = m3(testers, tester_log, active_tester);
+
+
+	switch (choice)
+	{
 	case 1:
 		system("cls");
 		cout << string(20, '-') << "\n";
@@ -707,12 +723,62 @@ int m4(vector<tester>& testers, map<string, string>& tester_log) {
 		cin >> choice;
 		return choice;
 		break;
+	default:
+		break;
 	}
-}
-int m5(vector<tester>& testers, map<string, string>& tester_log) {
 
-	return 0;
 }
+
+void menu(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester, vector<rozdil> rozdils) {
+
+	int c = m4(testers, tester_log, active_tester);
+
+	switch (c)
+	{
+	case 1:
+		// Rozdil
+		int r;
+		system("cls");
+		cout << string(20, '-') << "\n";
+		for (int i = 1; i <= rozdils.size(); i++)
+		{
+			cout << rozdils[i - 1].getName() << " - " << i << "\n";
+		}
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> r;
+
+		// Test
+		int t;
+		system("cls");
+		cout << string(20, '-') << "\n";
+		for (int i = 1; i <= rozdils[r - 1].getNumber(); i++)
+		{
+			cout << rozdils[r - 1].getTest(i - 1).getName() << " - " << i << "\n";
+		}
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> t;
+
+
+		system("cls");
+		passTest(rozdils[r - 1].getTest(t - 1), active_tester);
+		break;
+	case 2:
+		system("cls");
+		cout << "See results " << active_tester.getLogin() << "\n";
+		cout << string(50, '-') << "\n\n";
+		for (int i = 0; i < active_tester.getResults().size(); i++)
+			active_tester.getResult(i).print();
+		cout << string(50, '-') << "\n\n";
+		break;
+	default:
+		break;
+	}
+
+
+}
+
 
 
 int main() {
@@ -722,7 +788,7 @@ int main() {
 	// Create tester
 	vector<tester> testers;
 	map<string, string> tester_log;
-	tester active_tester();
+	tester active_tester;
 
 
 	// Create admin
@@ -749,48 +815,9 @@ int main() {
 
 
 	// Menu
-	int c = 1;// m4(testers, tester_log);
 
-	switch (c)
-	{
-	case 1:
-		// Rozdil
-		int r;
-		system("cls");
-		cout << string(20, '-') << "\n";
-		for (int i = 1; i <= rozdils.size(); i++)
-		{
-			cout << rozdils[i-1].getName() << " - " << i << "\n";
-		}
-		cout << string(20, '-') << "\n\n";
-		cout << "Enter choice: ";
-		cin >> r;
-
-		// Test
-		int t;
-		system("cls");
-		cout << string(20, '-') << "\n";
-		for (int i = 1; i <= rozdils[r-1].getNumber(); i++)
-		{
-			cout << rozdils[r-1].getTest(i-1).getName() << " - " << i << "\n";
-		}
-		cout << string(20, '-') << "\n\n";
-		cout << "Enter choice: ";
-		cin >> t;
-
-
-		system("cls");
-		passTest(rozdils[r-1].getTest(t-1));
-		break;
-	case 2:
-
-		break;
-	default:
-		break;
-	}
-
-
-	
+	//int c = m3(testers, tester_log, active_tester);
+	menu(testers, tester_log, active_tester, rozdils);
 
 
 

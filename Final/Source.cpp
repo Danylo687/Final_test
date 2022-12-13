@@ -15,20 +15,27 @@ class result {
 	int correct, incorrect;
 	double procent;
 	int mark;
+	string roz;
+	string tst;
 public:
 	result() {
 		correct = incorrect = 0;
 		procent = 0;
 		mark = 0;
 	}
-	result(double procent, int correct, int incorrect, int mark) {
+	result(double procent, int correct, int incorrect, int mark, string r, string t) {
 		this->correct = correct;
 		this->incorrect = incorrect;
 		this->procent = procent;
 		this->mark = mark;
+		this->roz = r;
+		this->tst = t;
 	}
 
 	void print() {
+		cout << string(20, '-') << "\n";
+		cout << "Rozdil: " << roz << "\n";
+		cout << "Test: " << tst << "\n";
 		cout << string(20, '-') << "\n";
 		cout << "Correct: " << correct << "\n";
 		cout << "Incorrect: " << incorrect << "\n";
@@ -36,6 +43,9 @@ public:
 		cout << "Mark: " << mark << "\n";
 		cout << string(20, '-') << "\n\n";
 	}
+
+	string getRozdil() { return roz; }
+	string getTest() { return tst; }
 };
 
 
@@ -93,7 +103,7 @@ public:
 	}
 
 	void set() {
-		cout << string(20, '-') << "\n";
+		cout << string(30, '-') << "\n";
 		cout << "Enter login: ";
 		cin >> login;
 		cout << "Enter password: ";
@@ -108,7 +118,7 @@ public:
 		cin >> adress;
 		cout << "Enter number: ";
 		cin >> number;
-		cout << string(20, '-') << "\n";
+		cout << string(30, '-') << "\n";
 	}
 
 	void set(string login, string password) {
@@ -586,7 +596,7 @@ void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>
 
 
 
-void passTest(test t, tester& active_tester) {
+void passTest(test t, tester& active_tester, rozdil roz, vector<tester>& testers) {
 	int number = t.getNumber();
 	vector<question> questions = t.getQuestions();
 	vector<int> correct_ansewrs;
@@ -620,10 +630,17 @@ void passTest(test t, tester& active_tester) {
 	system("cls");
 	double procent = 100 / number * correct;
 	int mark = 12 / number * correct;
-	result r(procent, correct, incorrect, mark);
+	result r(procent, correct, incorrect, mark, roz.getName(), t.getName());
 
 	r.print();
 	active_tester.addResult(r);
+	for (int i = 0; i < testers.size(); i++)
+	{
+		if (testers[i].getLogin() == active_tester.getLogin()) {
+			testers[i].addResult(r);
+		}
+	}
+
 
 	system("pause");
 
@@ -635,6 +652,7 @@ void passTest(test t, tester& active_tester) {
 // --------------------- Menu
 int m1() {
 	int choice;
+	system("cls");
 	cout << string(20, '-') << "\nTester - 0 \nAdmin  - 1\n" << string(20, '-') << "\nEnter choice: ";
 	cin >> choice;
 	return choice;
@@ -723,13 +741,24 @@ int m4(vector<tester>& testers, map<string, string>& tester_log, tester& active_
 		cin >> choice;
 		return choice;
 		break;
+	case 2:
+		system("cls");
+		cout << string(20, '-') << "\n";
+		cout << "Eddit testers - 1\n";
+		cout << "See statistic - 2\n";
+		cout << "Eddit test    - 3\n";
+		cout << string(20, '-') << "\n\n";
+		cout << "Enter choice: ";
+		cin >> choice;
+		return choice + 10;
+		break;
 	default:
 		break;
 	}
 
 }
 
-void menu(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester, vector<rozdil> rozdils) {
+void menu(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester, vector<rozdil> rozdils, vector<test> tests) {
 
 	int c = m4(testers, tester_log, active_tester);
 
@@ -762,7 +791,7 @@ void menu(vector<tester>& testers, map<string, string>& tester_log, tester& acti
 
 
 		system("cls");
-		passTest(rozdils[r - 1].getTest(t - 1), active_tester);
+		passTest(rozdils[r - 1].getTest(t - 1), active_tester, rozdils[r - 1], testers);
 		break;
 	case 2:
 		system("cls");
@@ -771,6 +800,115 @@ void menu(vector<tester>& testers, map<string, string>& tester_log, tester& acti
 		for (int i = 0; i < active_tester.getResults().size(); i++)
 			active_tester.getResult(i).print();
 		cout << string(50, '-') << "\n\n";
+		break;
+	case 11:
+		int tr;
+		system("cls");
+		cout << string(50, '-') << "\n\n";
+		for (int i = 1; i <= testers.size(); i++)
+		{
+			cout << testers[i-1].getLogin() << " - " << i << "\n";
+		}
+		cout << "\n" << string(50, '-') << "\n\n";
+
+		cout << "Enter choice: ";
+		cin >> tr;
+
+		system("cls");
+		testers[tr - 1].set();
+
+		break;
+	case 12:
+		int ch;
+		system("cls");
+		cout << string(50, '-') << "\n";
+		cout << "Tester result - 1\n";
+		cout << "Rozdil result - 2\n";
+		cout << "Test result   - 3\n";
+		cout << string(50, '-') << "\n\n";
+
+		cout << "Enter choice: ";
+		cin >> ch;
+
+
+		switch (ch)
+		{
+		case 1:
+			int cho;
+			system("cls");
+			cout << string(50, '-') << "\n\n";
+			for (int i = 1; i <= testers.size(); i++)
+			{
+				cout << testers[i - 1].getLogin() << " - " << i << "\n";
+			}
+			cout << "\n" << string(50, '-') << "\n\n";
+
+			cout << "Enter choice: ";
+			cin >> cho;
+
+			system("cls");
+			cout << string(50, '-') << "\n\n";
+			for (int i = 0; i < testers[cho-1].getResults().size(); i++)
+				testers[cho-1].getResult(i).print();
+			cout << string(50, '-') << "\n\n";
+			break;
+		case 2:
+			system("cls");
+			cout << string(50, '-') << "\n\n";
+			for (int i = 1; i <= rozdils.size(); i++)
+			{
+				cout << rozdils[i-1].getName() << " - " << i << "\n";
+			}
+			cout << "\n" << string(50, '-') << "\n\n";
+
+			cout << "Enter choice: ";
+			cin >> cho;
+
+			system("cls");
+			for (int i = 0; i < testers.size(); i++)
+			{
+				for (int j = 0; j < testers[i].getResults().size(); j++)
+				{
+					if (testers[i].getResult(j).getRozdil() == rozdils[cho-1].getName())
+					{
+						testers[i].getResult(j).print();
+					}
+				}
+			}
+			break;
+		case 3:
+			system("cls");
+			cout << string(50, '-') << "\n";
+			for (int i = 1; i <= rozdils.size(); i++)
+			{
+				vector<test> ttt = rozdils[i - 1].getTests();
+				for (int j = 0; j < ttt.size(); j++)
+				{
+					cout << ttt[j].getName() << " - " << (i - 1) * ttt.size() + 1 + j << "\n";
+				}
+			}
+			cout<< string(50, '-') << "\n\n";
+
+			cout << "Enter choice: ";
+			cin >> cho;
+
+			system("cls");
+			for (int i = 0; i < testers.size(); i++)
+			{
+				for (int j = 0; j < testers[i].getResults().size(); j++)
+				{
+					if (testers[i].getResult(j).getTest() == tests[cho-1].getName())
+					{
+						testers[i].getResult(j).print();
+					}
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		
+
 		break;
 	default:
 		break;
@@ -798,11 +936,9 @@ int main() {
 
 	// Create questions
 	vector<question> questions;
-	//readQuestions(questions);
 
 	// Create test
 	vector<test> tests;
-	//readTests(questions, tests);
 
 	// Create rozdil
 	vector<rozdil> rozdils;
@@ -815,9 +951,9 @@ int main() {
 
 
 	// Menu
+	menu(testers, tester_log, active_tester, rozdils, tests);
+	menu(testers, tester_log, active_tester, rozdils, tests);
 
-	//int c = m3(testers, tester_log, active_tester);
-	menu(testers, tester_log, active_tester, rozdils);
 
 
 

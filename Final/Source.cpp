@@ -392,6 +392,36 @@ public:
 		cout << string(50, '-') << "\n\n";
 	}
 
+	void setQuestion(vector<question> questions) {
+
+		system("cls");
+		cout << string(30, '-') << "\n";
+		cout << "Enter question name: ";
+		cin >> quest;
+
+		cout << "Enter number of answers: ";
+		cin >> number_answers;
+
+		for (int i = 1; i <= number_answers; i++)
+		{
+			string a;
+			cout << "Enter " << i << " answer: ";
+			cin >> a;
+			answers.push_back(a);
+			if(i==1)
+				answers.push_back(a);
+		}
+
+
+		cout << "Enter number of correct answer: ";
+		cin >> correct;
+		//correct--;
+
+
+		cout << string(30, '-') << "\n";
+
+	}
+
 	int getCorrect() { return correct; }
 };
 
@@ -442,8 +472,23 @@ public:
 		this->number_questions = number_questions;
 	}
 
+	void addQuestion(question qq) {
+		system("cls");
+		cout << "Number questions: " << number_questions << "\n";
+		cout << "Questions size: " << questions.size() << "\n";
+		questions.push_back(qq);
+		number_questions++;
+		cout << "\nNumber questions: " << number_questions << "\n";
+		cout << "Questions size: " << questions.size() << "\n";
+		system("pause");
+	}
+
 	void print() {
-		cout << "Name: " << name << "\n";
+		system("cls");
+		cout << "\nNumber questions: " << number_questions << "\n";
+		cout << "Questions size: " << questions.size() << "\n";
+		system("pause");
+		cout << "Test name: " << name << "\n";
 		cout << string(50, '-') << "\n\n";
 		for (int i = 0; i < number_questions; i++) {
 			questions[i].print();
@@ -455,6 +500,28 @@ public:
 		this->name = name;
 		this->questions = questions;
 		this->number_questions = number_questions;
+	}
+
+	void setTest(vector<question> quests, vector<test> tests) {
+
+		system("cls");
+		cout << string(30, '-') << "\n";
+		cout << "Enter test name: ";
+		cin >> name;
+
+		cout << "Enter number of questions: ";
+		cin >> number_questions;
+
+		for (int i = 1; i <= number_questions; i++)
+		{
+			question q;
+			q.setQuestion(questions);
+			questions.push_back(q);
+
+			quests.push_back(q);
+		}
+
+		cout << string(30, '-') << "\n";
 	}
 
 	string getName() { return name; }
@@ -522,13 +589,34 @@ public:
 	}
 
 	void print() {
-		cout << "Name: " << name << "\n";
+		cout << "Rozdil name: " << name << "\n";
 		cout << string(50, '-') << "\n\n";
 		for (int i = 0; i < number_tests; i++) {
 			tests[i].print();
 		}
 		cout << string(50, '-') << "\n";
 	}
+
+	void setRozdil(vector<question> quests, vector<test> tsts, vector<rozdil> rozs) {
+
+		cout << string(30, '-') << "\n";
+		cout << "Enter name: ";
+		cin >> name;
+
+		cout << "Enter number of tests: ";
+		cin >> number_tests;
+
+		for (int i = 0; i < number_tests; i++)
+		{
+			test ttt;
+			ttt.setTest(quests, tsts);
+
+			tests.push_back(ttt);
+		}
+
+	}
+
+	void addTest(test& t) { this->tests.push_back(t); number_tests++; }
 
 	string getName() { return name; }
 	int getNumber() { return number_tests; }
@@ -746,7 +834,7 @@ int m4(vector<tester>& testers, map<string, string>& tester_log, tester& active_
 		cout << string(20, '-') << "\n";
 		cout << "Eddit testers - 1\n";
 		cout << "See statistic - 2\n";
-		cout << "Eddit test    - 3\n";
+		cout << "Add tests     - 3\n";
 		cout << string(20, '-') << "\n\n";
 		cout << "Enter choice: ";
 		cin >> choice;
@@ -758,7 +846,7 @@ int m4(vector<tester>& testers, map<string, string>& tester_log, tester& active_
 
 }
 
-void menu(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester, vector<rozdil> rozdils, vector<test> tests) {
+void menu(vector<tester>& testers, map<string, string>& tester_log, tester& active_tester, vector<rozdil>& rozdils, vector<test>& tests, vector<question>& questions) {
 
 	int c = m4(testers, tester_log, active_tester);
 
@@ -910,6 +998,90 @@ void menu(vector<tester>& testers, map<string, string>& tester_log, tester& acti
 		
 
 		break;
+	case 13:
+		system("cls");
+		cout << string(50, '-') << "\n";
+		cout << "Add rozdil   - 1\n";
+		cout << "Add test     - 2\n";
+		cout << "Add question - 3\n";
+		cout << string(50, '-') << "\n\n";
+
+		cout << "Enter choice: ";
+		cin >> ch;
+
+
+
+		if (ch == 1) {
+
+			rozdil r;
+			r.setRozdil(questions, tests, rozdils);
+			rozdils.push_back(r);
+
+			for (int i = 0; i < rozdils.size(); i++)
+			{
+				rozdils[i].print();
+			}
+
+		}
+		// -----------------
+		if (ch == 2) {
+			int rzd;
+			system("cls");
+			cout << string(30, '-') << "\n";
+			for (int i = 1; i <= rozdils.size(); i++)
+			{
+				cout << rozdils[i - 1].getName() << " - " << i << "\n";
+			}
+			cout << string(30, '-') << "\n\n";
+			cout << "Enter rozdil: ";
+			cin >> rzd;
+
+			test tt;
+			tt.setTest(questions, tests);
+			tests.push_back(tt);
+
+			vector<test> vt = rozdils[rzd - 1].getTests();
+			vt.push_back(tt);
+
+			rozdil new_r(rozdils[rzd - 1].getName(), vt, vt.size());
+			rozdils[rzd - 1] = new_r;
+		}
+		// -----------------
+		if (ch == 3) {
+			int cr;
+			system("cls");
+			cout << string(30, '-') << "\n";
+			for (int i = 1; i <= rozdils.size(); i++)
+			{
+				cout << rozdils[i - 1].getName() << " - " << i << "\n";
+			}
+			cout << string(30, '-') << "\n\n";
+			cout << "Enter rozdil: ";
+			cin >> cr;
+			int ct;
+			system("cls");
+			cout << string(30, '-') << "\n";
+
+				for (int j = 1; j <= rozdils[cr-1].getTests().size(); j++)
+				{
+					cout << rozdils[cr - 1].getTest(j - 1).getName() << " - " << j << "\n";
+				}
+			cout << string(30, '-') << "\n\n";
+			cout << "Enter test: ";
+			cin >> ct;
+
+			question q;
+			q.setQuestion(questions);
+
+			test new_t = rozdils[cr - 1].getTest(ct - 1);
+			new_t.getQuestions().push_back(q);
+
+			rozdils[cr - 1].getTest(ct - 1) = new_t;
+		}
+
+
+
+		break;
 	default:
 		break;
 	}
@@ -951,13 +1123,11 @@ int main() {
 
 
 	// Menu
-	menu(testers, tester_log, active_tester, rozdils, tests);
-	menu(testers, tester_log, active_tester, rozdils, tests);
+	menu(testers, tester_log, active_tester, rozdils, tests, questions);
+	menu(testers, tester_log, active_tester, rozdils, tests, questions);
+	menu(testers, tester_log, active_tester, rozdils, tests, questions);
 
-
-
-
-
+	
 
 
 

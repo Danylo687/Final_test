@@ -201,7 +201,7 @@ void printAllTesters(vector<T3> v, map<string, string> m) {
 void testersReadingFromFile(vector<tester>& testers, map<string, string>& tester_log) {
 
 	fstream read_tester;
-	read_tester.open("D:/IT steap/C++/Final/Tester.txt", fstream::in);
+	read_tester.open("Tester.txt", fstream::in);
 
 	string login, password, name, surname, fname, adress, number;
 
@@ -219,7 +219,7 @@ void testersReadingFromFile(vector<tester>& testers, map<string, string>& tester
 // Writing
 void testersWritingToFile(vector<tester> testers, map<string, string> tester_log) {
 	fstream write_tester;
-	write_tester.open("D:/IT steap/C++/Final/Tester.txt", fstream::out);
+	write_tester.open("Tester.txt", fstream::out);
 
 	int i = 0;
 	for (auto el : tester_log) {
@@ -326,7 +326,7 @@ void adminSignUp() {
 
 
 	fstream write_admin;
-	write_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::out);
+	write_admin.open("Admin.txt", fstream::out);
 
 	write_admin << login << " " << password;
 
@@ -337,7 +337,7 @@ void adminSignUp() {
 void adminSignIn() {
 	// Read
 	fstream read_admin;
-	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+	read_admin.open("Admin.txt", fstream::in);
 
 	string admin_login, admin_password;
 	read_admin >> admin_login >> admin_password;
@@ -468,7 +468,7 @@ void printQuestions(vector<question> questions) {
 
 void readQuestions(vector<question>& questions) {
 	fstream read_qustions;
-	read_qustions.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+	read_qustions.open("Tests.txt", fstream::in);
 
 	while (!read_qustions.eof()) {
 		string quest, line;
@@ -565,7 +565,7 @@ public:
 
 void readTests(vector<question>& questions, vector<test>& tests) {
 	fstream read_tests;
-	read_tests.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+	read_tests.open("Tests.txt", fstream::in);
 
 	while (!read_tests.eof()) {
 
@@ -661,7 +661,7 @@ public:
 
 void writeRozdilToFile(vector<question>& questions, vector<test>& tests, vector<rozdil>& rozdils) {
 	fstream write_rozdil;
-	write_rozdil.open("D:/IT steap/C++/Final/Tests.txt", fstream::out);
+	write_rozdil.open("Tests.txt", fstream::out);
 
 	for (int i = 0; i < rozdils.size(); i++)
 	{
@@ -694,7 +694,7 @@ void writeRozdilToFile(vector<question>& questions, vector<test>& tests, vector<
 
 void readRozdil(vector<question>& questions, vector<test>& tests, vector<rozdil>& rozdils) {
 	fstream read_rozdil;
-	read_rozdil.open("D:/IT steap/C++/Final/Tests.txt", fstream::in);
+	read_rozdil.open("Tests.txt", fstream::in);
 
 	while (!read_rozdil.eof()) {
 
@@ -814,7 +814,7 @@ int m1() {
 }
 int m2(int return_choice) {
 	fstream read_admin;
-	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+	read_admin.open("Admin.txt", fstream::in);
 
 	int admin_length = read_admin.tellg();
 
@@ -864,7 +864,7 @@ int m2(int return_choice) {
 }
 int m2() {
 	fstream read_admin;
-	read_admin.open("D:/IT steap/C++/Final/Admin.txt", fstream::in);
+	read_admin.open("Admin.txt", fstream::in);
 
 	int admin_length = read_admin.tellg();
 
